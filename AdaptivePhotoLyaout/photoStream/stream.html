@@ -1,0 +1,43 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stream.css">
+    <title>Document</title>
+</head>
+<body>
+    <ul id="fwall">
+        <!-- Photos will be inserted here -->
+      </ul>
+
+
+      <script>
+        let fwitems = null;
+        function flickrWall() {
+          if (fwitems) {
+            let fwall = document.getElementById('fwall');
+            fwitems.forEach(function(item) {
+              let elem = document.createElement('li');
+              let link = document.createElement('a');
+              link.setAttribute('href', item.link.replace('/in/set-369431','')); // Remove the "/in/set-369431" because I want links to be in "photostream context", not in "album context".
+              link.setAttribute('title', item.title);
+              elem.appendChild(link);
+              let image = document.createElement('img');
+              image.setAttribute('src', item.media.m.replace('_m.','.')); // Default photos in feed are 240px wide XXXX_m.jpg photos, but I want the 500px wide XXXX.jpg photos.
+              image.setAttribute('alt', ' [Image: ' + item.title + '] ');
+              image.setAttribute('loading', 'lazy');
+              link.appendChild(image);
+              fwall.appendChild(elem);
+            });
+            fwall.appendChild(document.createElement('li')); // End with an empty item.
+          }
+        }
+        function jsonFlickrFeed(photos) { // Function to be called from JSONP feed (https://www.flickr.com/services/feeds/photoset.gne?nsid=10259776@N00&set=369431&lang=en-us&format=json&nojsoncallback=0)
+          fwitems = photos.items;
+          window.addEventListener('DOMContentLoaded', flickrWall, false);
+        }
+        </script>
+        <script defer src="https://www.flickr.com/services/feeds/photoset.gne?nsid=10259776@N00&set=369431&lang=en-us&format=json&nojsoncallback=0"></script>
+</body>
+</html>
